@@ -39,7 +39,7 @@ const SCAM_KEYWORDS = [
 ];
 
 function calculateScamScore(message) {
-    if (!message) return 0;
+    if (!message || typeof message !== "string") return 0.05;
     const lowerMsg = message.toLowerCase();
     let hits = 0;
 
@@ -117,22 +117,20 @@ const CONTEXT_REPLIES = {
 };
 
 function generateAgentReply(message, conversationId) {
-    const lowerMsg = message.toLowerCase();
+    const safeMsg = typeof message === "string" ? message : "";
+    const lowerMsg = safeMsg.toLowerCase();
 
-    // Update memory
     let mem = conversationMemory.get(conversationId) || { turns: 0 };
     mem.turns += 1;
     conversationMemory.set(conversationId, mem);
 
-    // Pick category
     let availableReplies = CONTEXT_REPLIES.default;
+
     if (lowerMsg.includes('otp') || lowerMsg.includes('code')) availableReplies = CONTEXT_REPLIES.otp;
     else if (lowerMsg.includes('pay') || lowerMsg.includes('transfer') || lowerMsg.includes('rs') || lowerMsg.includes('rupee')) availableReplies = CONTEXT_REPLIES.money;
     else if (lowerMsg.includes('link') || lowerMsg.includes('click')) availableReplies = CONTEXT_REPLIES.link;
 
-    // Random pick
-    const reply = availableReplies[Math.floor(Math.random() * availableReplies.length)];
-    return reply;
+    return availableReplies[Math.floor(Math.random() * availableReplies.length)];
 }
 
 // --- ROUTES ---
