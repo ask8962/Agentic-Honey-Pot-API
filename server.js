@@ -195,7 +195,11 @@ app.post('/api/honeypot', (req, res) => {
     }
 });
 
-// Start Server
-app.listen(PORT, () => {
-    console.log(`Agentic HoneyPot server running on port ${PORT}`);
-});
+// Start Server (Only if not running in Vercel/Serverless mode)
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Agentic HoneyPot server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
