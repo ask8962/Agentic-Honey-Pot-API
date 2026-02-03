@@ -1,0 +1,24 @@
+{
+  "name": "agentic-honeypot-backend",
+  "version": "1.0.0",
+  "description": "Agentic Honey-Pot for Scam Detection & Intelligence Extraction",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "honeypot",
+    "scam-detection",
+    "express",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
