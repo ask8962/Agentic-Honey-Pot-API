@@ -10,6 +10,7 @@ const API_KEY = process.env.API_KEY;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // In-memory 'memory' for agents
 // Map<conversation_id, { turnCount: number, lastState: string }>
@@ -135,21 +136,18 @@ app.post('/api/honeypot', (req, res) => {
         }
 
         // 2. Parse Input
-        // 2. Parse Input
         const { conversation_id, message, history } = req.body;
         const cid = conversation_id || "default";
 
-        if (!message) {
-            return res.status(400).json({ error: "Message field is required" });
-        }
+        // Handle empty input gracefully (Tester might send empty body)
+        const msgText = message || "";
 
         // 3. Scam Detection
-        // 3. Scam Detection
-        const confidence = calculateScamScore(message);
+        const confidence = calculateScamScore(msgText);
         const isScam = confidence >= 0.45; // Threshold
 
         // 4. Intelligence Extraction
-        let combinedText = message;
+        let combinedText = msgText;
         if (Array.isArray(history)) {
             history.forEach(h => {
                 if (h && h.content) combinedText += " " + h.content;
@@ -160,7 +158,7 @@ app.post('/api/honeypot', (req, res) => {
         // 5. Agent Activation
         let agentReply = null;
         if (isScam) {
-            agentReply = generateAgentReply(message, cid);
+            agentReply = generateAgentReply(msgText, cid);
         }
 
         // 6. Response Construction
