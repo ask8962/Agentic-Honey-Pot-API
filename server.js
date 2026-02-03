@@ -136,7 +136,8 @@ app.post('/api/honeypot', (req, res) => {
         }
 
         // 2. Parse Input
-        const { conversation_id, message, history } = req.body;
+        const body = req.body || {};
+        const { conversation_id, message, history } = body;
         const cid = conversation_id || "default";
 
         // Handle empty input gracefully (Tester might send empty body)
