@@ -156,25 +156,25 @@ app.post('/api/honeypot', (req, res) => {
         const cid = conversation_id || "default";
 
         // Handle empty input gracefully (Tester might send empty body)
-        const msgText = message || "";
+        const safeMessage = message || "";
 
         // 3. Scam Detection
-        const confidence = calculateScamScore(msgText);
+        const confidence = calculateScamScore(safeMessage);
         const isScam = confidence >= 0.45; // Threshold
 
         // 4. Intelligence Extraction
-        let combinedText = msgText;
+        let combinedText = safeMessage;
         if (Array.isArray(history)) {
             history.forEach(h => {
                 if (h && h.content) combinedText += " " + h.content;
             });
         }
-        const extracted = extractIntelligence(combinedText);
+        const extracted = extractIntelligence(combinedText || safeMessage);
 
         // 5. Agent Activation
         let agentReply = null;
         if (isScam) {
-            agentReply = generateAgentReply(msgText, cid);
+            agentReply = generateAgentReply(safeMessage, cid);
         }
 
         // 6. Response Construction
