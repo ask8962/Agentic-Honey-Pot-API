@@ -12,6 +12,15 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Error handling for bad JSON/body
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        console.error('Bad JSON:', err.message);
+        return res.status(400).json({ error: "Invalid JSON body" });
+    }
+    next();
+});
+
 // In-memory 'memory' for agents
 // Map<conversation_id, { turnCount: number, lastState: string }>
 const conversationMemory = new Map();
