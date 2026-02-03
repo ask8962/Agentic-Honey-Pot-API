@@ -154,7 +154,8 @@ app.post('/api/honeypot', (req, res) => {
         const cid = conversation_id || "default";
 
         // Handle empty input gracefully (Tester might send empty body)
-        const safeMessage = message || "";
+        // Handle empty input gracefully (Tester might send empty body)
+        const safeMessage = (typeof message === "string") ? message : "";
 
         // 3. Scam Detection
         const confidence = calculateScamScore(safeMessage);
