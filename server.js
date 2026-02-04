@@ -181,7 +181,12 @@ app.get('/', (req, res) => {
     res.json({ status: "HoneyPot Server Running", description: "Send POST to /api/honeypot" });
 });
 
-// Main Honeypot Endpoint
+// GET handler for /api/honeypot (some testers check availability via GET)
+app.get('/api/honeypot', (req, res) => {
+    res.json({ status: "success", reply: "Honeypot endpoint ready. Send POST request with message." });
+});
+
+// Main Honeypot Endpoint (POST)
 app.post('/api/honeypot', (req, res) => {
     try {
         // 1. Auth Check
