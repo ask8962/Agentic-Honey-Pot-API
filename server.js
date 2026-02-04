@@ -8,16 +8,26 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.API_KEY;
 
-// Middleware
-app.use(cors());
+// Comprehensive CORS for browser-based testers
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'x-api-key', 'Authorization']
+}));
+
+// Handle OPTIONS preflight
+app.options('*', cors());
+
+// Body parsing - handle all possible formats
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.text({ type: '*/*' })); // Handle text/plain as fallback
 
 // Error handling for bad JSON/body
 app.use((err, req, res, next) => {
-    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
-        console.error('Bad JSON handled:', err.message);
-        return res.status(200).json({ status: "success", reply: "Message not clear, please send again." });
+    if (err) {
+        console.error('Body parse error:', err.message);
+        return res.status(200).json({ status: "success", reply: "Message received." });
     }
     next();
 });
